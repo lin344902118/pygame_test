@@ -1,22 +1,22 @@
 # -*- coding:utf-8 -*-
 """
-    创建一个背景为蓝色的pygame窗口
+    创建一个人物类
 """
 
 import pygame
 from pygame.sprite import Sprite
 
 
-class Love(Sprite):
+class Human(Sprite):
     def __init__(self, ai_settings, screen):
-        super(Love, self).__init__()
-        self.image = pygame.image.load('images/love.jpg')
+        super(Human, self).__init__()
+        self.image = pygame.image.load('images/human.jpg')
         self.screen = screen
         self.ai_settings = ai_settings
         self.rect = self.image.get_rect()
         self.screen_rect = self.screen.get_rect()
         self.rect.centerx = self.screen_rect.centerx
-        self.rect.bottom = self.screen_rect.bottom
+        self.rect.bottom = self.screen_rect.centerx
         self.center = float(self.rect.centerx)
         self.bottom = float(self.rect.bottom)
         self.moving_left = False
