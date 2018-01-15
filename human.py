@@ -15,10 +15,9 @@ class Human(Sprite):
         self.ai_settings = ai_settings
         self.rect = self.image.get_rect()
         self.screen_rect = self.screen.get_rect()
-        self.rect.centerx = self.screen_rect.centerx
-        self.rect.bottom = self.screen_rect.centerx
-        self.center = float(self.rect.centerx)
-        self.bottom = float(self.rect.bottom)
+        x, y = ai_settings.human_location[0]-1, ai_settings.human_location[1]-1
+        self.rect.x = self.rect.width * x
+        self.rect.y = self.rect.height * y
         self.moving_left = False
         self.moving_right = False
         self.moving_top = False
@@ -30,12 +29,10 @@ class Human(Sprite):
 
     def update(self):
         if self.moving_left and self.rect.left > 0:
-            self.center -= self.speed
+            self.rect.x -= self.speed
         elif self.moving_right and self.rect.right < self.screen_rect.right:
-            self.center += self.speed
+            self.rect.x += self.speed
         elif self.moving_top and self.rect.top > 0:
-            self.bottom -= self.speed
+            self.rect.y -= self.speed
         elif self.moving_bottom and self.rect.bottom < self.screen_rect.bottom:
-            self.bottom += self.speed
-        self.rect.centerx = self.center
-        self.rect.bottom = self.bottom
+            self.rect.y += self.speed

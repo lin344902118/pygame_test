@@ -13,7 +13,7 @@ class Settings():
         self.screen_width = 544
         self.screen_height = 544
         self.bg_color = (255, 255, 255)
-        self.speed = 1
+        self.speed = 34
 
         self.tree_location = [[5,8],[5,9],[5,10],[6,8],[6,10],[7,5],[7,6],
                               [7,7],[7,8],[7,10],[8,5],[8,10],[8,11],[8,12],

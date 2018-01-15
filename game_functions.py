@@ -79,12 +79,16 @@ def check_keydown_events(event, human):
         sys.exit()
     elif event.key == pygame.K_LEFT:
         human.moving_left = True
+        human.update()
     elif event.key == pygame.K_RIGHT:
         human.moving_right = True
+        human.update()
     elif event.key == pygame.K_UP:
         human.moving_top = True
+        human.update()
     elif event.key == pygame.K_DOWN:
         human.moving_bottom = True
+        human.update()
 
 
 def check_keyup_events(event, human):
@@ -114,17 +118,16 @@ def check_play_button(ai_settings, screen, stats, human, bgs, trees, suitcases, 
         create_trees(ai_settings, screen, trees)
         create_suitcases(ai_settings, screen, suitcases)
         create_targets(ai_settings, screen, targets)
-        # 每次循环重绘屏幕
-        screen.fill(ai_settings.bg_color)
+
+def update_screen(ai_settings, screen, stats, human, bgs, trees, suitcases, targets, play_button):
+    if stats.game_active:
         bgs.draw(screen)
         trees.draw(screen)
         suitcases.draw(screen)
         targets.draw(screen)
         human.blit()
-
-
-def update_screen(ai_settings, screen, stats, human, bgs, trees, suitcases, targets, play_button):
-    if not stats.game_active:
+    else:
+        screen.fill(ai_settings.bg_color)
         play_button.draw_button()
     # 让最近绘制的屏幕可见
     pygame.display.flip()
