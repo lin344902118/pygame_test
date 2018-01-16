@@ -39,8 +39,6 @@ def run_game():
     targets = Group()
     while True:
         gf.check_events(ai_setting, screen, stats, play_button, human, bgs, trees, suitcases, targets)
-        # if stats.game_active:
-        #     human.update()
         gf.update_screen(ai_setting, screen, stats, human, bgs, trees, suitcases, targets, play_button)
 
 

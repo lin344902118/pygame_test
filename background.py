@@ -45,3 +45,18 @@ class SuitCase(BaseSprite):
 
     def __init__(self, ai_settings, screen):
         BaseSprite.__init__(self, ai_settings, screen, 'images/suitcase.png')
+        self.moving_left = False
+        self.moving_right = False
+        self.moving_top = False
+        self.moving_bottom = False
+        self.speed = self.ai_settings.speed
+
+    def update(self):
+        if self.moving_left and self.rect.left > 0:
+            self.rect.x -= self.speed
+        elif self.moving_right and self.rect.right < self.screen_rect.right:
+            self.rect.x += self.speed
+        elif self.moving_top and self.rect.top > 0:
+            self.rect.y -= self.speed
+        elif self.moving_bottom and self.rect.bottom < self.screen_rect.bottom:
+            self.rect.y += self.speed
