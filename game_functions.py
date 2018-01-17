@@ -139,6 +139,7 @@ def check_keydown_events(event, human, trees, suitcases, ai_settings):
         if suitcase:
             suitcase.moving_left = True
             check_collide(suitcase, trees)
+            check_collide(suitcase, suitcases)
             if not suitcase.moving_left:
                 human.moving_left = False
     elif event.key == pygame.K_RIGHT:
@@ -147,6 +148,7 @@ def check_keydown_events(event, human, trees, suitcases, ai_settings):
         if suitcase:
             suitcase.moving_right = True
             check_collide(suitcase, trees)
+            check_collide(suitcase, suitcases)
             if not suitcase.moving_right:
                 human.moving_right = False
     elif event.key == pygame.K_UP:
@@ -155,6 +157,7 @@ def check_keydown_events(event, human, trees, suitcases, ai_settings):
         if suitcase:
             suitcase.moving_top = True
             check_collide(suitcase, trees)
+            check_collide(suitcase, suitcases)
             if not suitcase.moving_top:
                 human.moving_top = False
     elif event.key == pygame.K_DOWN:
@@ -163,6 +166,7 @@ def check_keydown_events(event, human, trees, suitcases, ai_settings):
         if suitcase:
             suitcase.moving_bottom = True
             check_collide(suitcase, trees)
+            check_collide(suitcase, suitcases)
             if not suitcase.moving_bottom:
                 human.moving_bottom = False
     check_collide(human, trees)
@@ -198,7 +202,6 @@ def check_play_button(ai_settings, screen, stats, human, bgs, trees, suitcases, 
         init_game(ai_settings, bgs, screen, suitcases, targets, trees)
     next_clicked = next_button.rect.collidepoint(mouse_x, mouse_y)
     if next_clicked and not stats.game_active:
-        stats.level_up()
         level = Level(stats.get_level())
         ai_settings.set_tree_location(level.get_tree_location())
         ai_settings.set_target_location(level.get_target_location())
