@@ -3,15 +3,16 @@ import sys
 
 import pygame
 from background import Background, Tree, SuitCase, Target
+from levels import Level
+
+def create_obj(x, y, objs, obj):
+    obj.rect.x = obj.rect.width * x
+    obj.rect.y = obj.rect.height * y
+    objs.add(obj)
 
 def create_bg(ai_settings, screen, x, y, bgs):
     bg = Background(ai_settings, screen)
-    bg_width = bg.rect.width
-    bg_height = bg.rect.height
-    bg.rect.x = bg_width * x
-    bg.rect.y = bg_height * y
-    bgs.add(bg)
-
+    create_obj(x, y , bgs, bg)
 
 def create_bgs(ai_settings, screen, bgs):
     bg = Background(ai_settings, screen)
@@ -23,11 +24,7 @@ def create_bgs(ai_settings, screen, bgs):
 
 def create_tree(ai_settings, screen, x, y, trees):
     tree = Tree(ai_settings, screen)
-    tree_width = tree.rect.width
-    tree_height = tree.rect.height
-    tree.rect.x = tree_width * x
-    tree.rect.y = tree_height * y
-    trees.add(tree)
+    create_obj(x, y, trees, tree)
 
 def create_trees(ai_settings,screen, trees):
     for location in ai_settings.tree_location:
@@ -36,11 +33,7 @@ def create_trees(ai_settings,screen, trees):
 
 def create_suitcase(ai_settings, screen, x, y, suitcases):
     suitcase = SuitCase(ai_settings, screen)
-    suitcase_width = suitcase.rect.width
-    suitcase_height = suitcase.rect.height
-    suitcase.rect.x = suitcase_width * x
-    suitcase.rect.y = suitcase_height * y
-    suitcases.add(suitcase)
+    create_obj(x, y, suitcases, suitcase)
 
 def create_suitcases(ai_settings,screen, suitcases):
     for location in ai_settings.suitcase_location:
@@ -49,18 +42,14 @@ def create_suitcases(ai_settings,screen, suitcases):
 
 def create_target(ai_settings, screen, x, y, targets):
     target = Target(ai_settings, screen)
-    target_width = target.rect.width
-    target_height = target.rect.height
-    target.rect.x = target_width * x
-    target.rect.y = target_height * y
-    targets.add(target)
+    create_obj(x, y, targets, target)
 
 def create_targets(ai_settings,screen, targets):
     for location in ai_settings.target_location:
         x, y = location[0]-1, location[1]-1
         create_target(ai_settings, screen, x, y, targets)
 
-def check_events(ai_settings, screen, stats, play_button, human, bgs, trees, suitcases, targets):
+def check_events(ai_settings, screen, stats, play_button, next_button, human, bgs, trees, suitcases, targets):
     # 监视键盘和鼠标事件
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -71,7 +60,7 @@ def check_events(ai_settings, screen, stats, play_button, human, bgs, trees, sui
             check_keyup_events(event, human, suitcases)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(ai_settings, screen, stats, bgs, trees, suitcases, targets, play_button, mouse_x, mouse_y)
+            check_play_button(ai_settings, screen, stats, human, bgs, trees, suitcases, targets, play_button, next_button, mouse_x, mouse_y)
 
 def get_locations(group):
     locations = list()
@@ -141,18 +130,6 @@ def check_game_over(suitcases, ai_settings):
             return False
     return True
 
-
-def show_action(obj, name='human'):
-    print('_____________%s__________________' %name)
-    if not obj.moving_left:
-        print('can not moving left')
-    if not obj.moving_right:
-        print('can not moving right')
-    if not obj.moving_top:
-        print('can not moving top')
-    if not obj.moving_bottom:
-        print('can not moving bottom')
-
 def check_keydown_events(event, human, trees, suitcases, ai_settings):
     if event.key == pygame.K_q:
         sys.exit()
@@ -211,38 +188,60 @@ def check_keyup_events(event, human, suitcases):
         for suitcase in suitcases:
             suitcase.moving_bottom = False
 
-def check_play_button(ai_settings, screen, stats, bgs, trees, suitcases, targets, play_button, mouse_x, mouse_y):
+def check_play_button(ai_settings, screen, stats, human, bgs, trees, suitcases, targets, play_button, next_button, mouse_x, mouse_y):
     """在玩家单机play按钮开始新游戏"""
     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
     if button_clicked and not stats.game_active:
-        # 隐藏光标
-        pygame.mouse.set_visible(False)
         # 重置游戏统计信息
         stats.reset_stats()
         stats.game_active = True
-        bgs.empty()
-        trees.empty()
-        suitcases.empty()
-        targets.empty()
-        create_bgs(ai_settings, screen, bgs)
-        create_trees(ai_settings, screen, trees)
-        create_suitcases(ai_settings, screen, suitcases)
-        create_targets(ai_settings, screen, targets)
+        init_game(ai_settings, bgs, screen, suitcases, targets, trees)
+    next_clicked = next_button.rect.collidepoint(mouse_x, mouse_y)
+    if next_clicked and not stats.game_active:
+        stats.level_up()
+        level = Level(stats.get_level())
+        ai_settings.set_tree_location(level.get_tree_location())
+        ai_settings.set_target_location(level.get_target_location())
+        ai_settings.set_suitcase_location(level.get_suitcase_location())
+        location = level.get_human_location()
+        human.set_position((location[0]-1)*34, (location[1]-1)*34)
+        stats.game_active = True
+        init_game(ai_settings, bgs, screen, suitcases, targets, trees)
 
-def update_screen(ai_settings, screen, stats, human, bgs, trees, suitcases, targets, play_button):
+
+def init_game(ai_settings, bgs, screen, suitcases, targets, trees):
+    # 隐藏光标
+    pygame.mouse.set_visible(False)
+    bgs.empty()
+    trees.empty()
+    suitcases.empty()
+    targets.empty()
+    create_bgs(ai_settings, screen, bgs)
+    create_trees(ai_settings, screen, trees)
+    create_suitcases(ai_settings, screen, suitcases)
+    create_targets(ai_settings, screen, targets)
+
+
+def update_screen(ai_settings, screen, stats, human, bgs, trees, suitcases, targets, play_button, next_button):
     if stats.game_active:
         bgs.draw(screen)
         trees.draw(screen)
         targets.draw(screen)
         suitcases.draw(screen)
         human.blit()
+        if check_game_over(suitcases, ai_settings):
+            stats.level_up()
+            play_button.prep_msg('Again')
+            pygame.mouse.set_visible(True)
+            stats.game_active = False
     else:
         screen.fill(ai_settings.bg_color)
         play_button.draw_button()
+        if stats.level > 1:
+            next_button.draw_button()
     # 让最近绘制的屏幕可见
     pygame.display.flip()
-    if check_game_over(suitcases, ai_settings):
-        stats.game_active = False
+
 
 
 

@@ -8,20 +8,24 @@ import pygame.font
 
 class Button():
 
-    def __init__(self, ai_settings, screen, msg):
+    def __init__(self, screen, msg, width=200, height=50, button_color=(0, 255, 0), text_color=(255, 255, 255), x=None, y=None):
         """初始化按钮的属性"""
         self.screen = screen
         self.screen_rect = screen.get_rect()
 
         # 设置按钮的尺寸和其他属性
-        self.width , self.height = 200, 50
-        self.button_color = (0, 255, 0)
-        self.text_color = (255, 255, 255)
+        self.width , self.height = width, height
+        self.button_color = button_color
+        self.text_color = text_color
         self.font = pygame.font.SysFont(None, 48)
 
-        # 创建按钮的rect对象，并使其居中
+
         self.rect  = pygame.Rect(0, 0, self.width, self.height)
-        self.rect.center = self.screen_rect.center
+        if x and y:
+            self.rect.x = x
+            self.rect.y = y
+        else:
+            self.rect.center = self.screen_rect.center
 
         # 按钮的标签只需创建一次
         self.prep_msg(msg)

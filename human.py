@@ -27,6 +27,10 @@ class Human(Sprite):
     def blit(self):
         self.screen.blit(self.image, self.rect)
 
+    def set_position(self, x, y):
+        self.rect.x = x
+        self.rect.y = y
+
     def update(self):
         if self.moving_left and self.rect.left > 0:
             self.rect.x -= self.speed

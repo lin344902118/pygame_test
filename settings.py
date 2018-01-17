@@ -25,3 +25,15 @@ class Settings():
         self.suitcase_location = [[8,8],[8,9],[10,8],[9,10]]
 
         self.human_location = [9,9]
+
+    def set_tree_location(self, tree_location):
+        self.tree_location = tree_location
+
+    def set_target_location(self, target_location):
+        self.target_location = target_location
+
+    def set_suitcase_location(self, suitcase_location):
+        self.suitcase_location = suitcase_location
+
+    def set_human_location(self, human_location):
+        self.human_location = human_location
