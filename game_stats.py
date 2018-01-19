@@ -12,11 +12,11 @@ class GameStats():
         self.ai_settings =ai_settings
         self.reset_stats()
         self.game_active = False
-        self.high_level = 5
+        self.high_level = 19
 
     def reset_stats(self):
         """初始化在游戏运行期间可能编号的统计信息"""
-        self.level = 5
+        self.level = 1
 
     def level_up(self):
         """下一关"""
